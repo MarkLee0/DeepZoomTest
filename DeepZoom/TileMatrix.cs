@@ -14,18 +14,18 @@ namespace DeepZoom
         private int rowCount;
         private int columnCount;
         private CGRect BoundingBox;
+        private CGPoint center;
 
         public TileMatrix(int tileWidth, int tileHeight, CGPoint center, int zoomLevel)
         {
             this.tileWidth = tileWidth;
             this.tileHeight = tileHeight;
             this.zoomLevel = zoomLevel;
+            this.center = center;
 
             rowCount = columnCount = (int)Math.Pow(2, zoomLevel);
             nfloat x = center.X - tileWidth * columnCount;
             nfloat y = center.Y - tileHeight * rowCount;
-
-            startLocation = CalculateStartLocation(center);
 
             BoundingBox = new CGRect(x, y, tileWidth * columnCount, tileHeight * rowCount);
         }
@@ -44,9 +44,14 @@ namespace DeepZoom
             if (minRowIndex < 0) minRowIndex = 0;
             if (maxRowIndex >= rowCount) maxRowIndex = rowCount;
 
-            for (int row = minRowIndex; row < maxRowIndex; row++)
+            int rowNumber = maxRowIndex - minRowIndex;
+            int columnNumber = maxColumnIndex - minColumnIndex;
+
+            startLocation = CalculateStartLocation(center, rowNumber, columnNumber);
+
+            for (int row = 0; row < rowNumber; row++)
             {
-                for (int column = minColumnIndex; column < maxColumnIndex; column++)
+                for (int column = 0; column < columnNumber; column++)
                 {
                     drawingMatrixCells.Add(GetCell(row, column));
                 }
@@ -65,13 +70,13 @@ namespace DeepZoom
             return returnCell;
         }
 
-        private CGPoint CalculateStartLocation(CGPoint centerPoint)
+        private CGPoint CalculateStartLocation(CGPoint centerPoint, int row, int column)
         {
             CGPoint upperLeft = new CGPoint();
 
-            nfloat xOffset = zoomLevel * tileWidth;
-            nfloat yOffset = zoomLevel * tileHeight;
-            if (zoomLevel == 0)
+            nfloat xOffset = (nfloat)Math.Ceiling(row * .5f) * tileWidth;
+            nfloat yOffset = (nfloat)Math.Ceiling(column * .5f) * tileHeight;
+            if (row == 1 && column == 1)
             {
                 xOffset = tileWidth * .5f;
                 yOffset = tileHeight * .5f;
