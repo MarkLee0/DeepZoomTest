@@ -92,6 +92,8 @@
     <Compile Include="DeepZoomTileView.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
+    <Compile Include="TileMatrix.cs" />
+    <Compile Include="TileMatrixCell.cs" />
     <None Include="Info.plist" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

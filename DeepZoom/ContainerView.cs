@@ -1,6 +1,7 @@
 using CoreGraphics;
 using Foundation;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using UIKit;
 
@@ -34,41 +35,21 @@ namespace DeepZoom
             }
 
             tileHeight = tileWidth = tileSize;
+            CGRect currentExtent = new CGRect(-Frame.Width * .5f, -Frame.Height * .5f, Frame.Width, Frame.Height);
 
-            int tileCount = (int)Math.Pow(2, zoomLevel);
+            TileMatrix tileMatrix = new TileMatrix(tileWidth, tileHeight, centerPoint, zoomLevel);
+            IEnumerable<TileMatrixCell> tileMatrixCells = tileMatrix.GetTileMatrixCells(currentExtent);
 
-            for (int i = 0; i < tileCount; i++)
+            foreach (var cell in tileMatrixCells)
             {
-                for (int j = 0; j < tileCount; j++)
-                {
-                    DeepZoomTileView tileView = new DeepZoomTileView();
-                    tileView.RowIndex = i;
-                    tileView.ColumnIndex = j;
-                    tileView.ZoomLevel = zoomLevel;
-                    tileView.TileHeight = tileView.TileWidth = tileSize;
-                    CGPoint tileViewCenter = CalculateCenterPoint(i, j, zoomLevel);
-                    tileView.Frame = new CGRect(tileViewCenter, new CGSize(tileView.TileWidth, tileView.TileHeight));
-                    AddSubview(tileView);
-                }
+                DeepZoomTileView tileView = new DeepZoomTileView();
+                tileView.RowIndex = cell.Row;
+                tileView.ColumnIndex = cell.Column;
+                tileView.ZoomLevel = zoomLevel;
+                tileView.TileHeight = tileView.TileWidth = tileSize;
+                tileView.Frame = cell.BoundingBox;
+                AddSubview(tileView);
             }
-        }
-
-        private CGPoint CalculateCenterPoint(int rowIndex, int columnIndex, int zoomLevel)
-        {
-            CGPoint newCenterPoint = new CGPoint();
-
-            nfloat xOffset = zoomLevel * tileWidth;
-            nfloat yOffset = zoomLevel * tileHeight;
-            if (zoomLevel == 0)
-            {
-                xOffset = tileWidth * .5f;
-                yOffset = tileHeight * .5f;
-            }
-
-            newCenterPoint.X = centerPoint.X + columnIndex * tileWidth - xOffset;
-            newCenterPoint.Y = centerPoint.Y + rowIndex * tileHeight - yOffset;
-
-            return newCenterPoint;
         }
 
         private CGPoint startPoint = CGPoint.Empty;
