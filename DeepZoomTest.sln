@@ -1,0 +1,98 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeepZoom", "DeepZoom\DeepZoom.csproj", "{063D30CA-03D6-4FDB-96D2-9665F0D9866A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Ad-Hoc|Any CPU = Ad-Hoc|Any CPU
+		Ad-Hoc|iPhone = Ad-Hoc|iPhone
+		Ad-Hoc|iPhoneSimulator = Ad-Hoc|iPhoneSimulator
+		Ad-Hoc|Mixed Platforms = Ad-Hoc|Mixed Platforms
+		AppStore|Any CPU = AppStore|Any CPU
+		AppStore|iPhone = AppStore|iPhone
+		AppStore|iPhoneSimulator = AppStore|iPhoneSimulator
+		AppStore|Mixed Platforms = AppStore|Mixed Platforms
+		Debug|Any CPU = Debug|Any CPU
+		Debug|iPhone = Debug|iPhone
+		Debug|iPhoneSimulator = Debug|iPhoneSimulator
+		Debug|Mixed Platforms = Debug|Mixed Platforms
+		Evaluation|Any CPU = Evaluation|Any CPU
+		Evaluation|iPhone = Evaluation|iPhone
+		Evaluation|iPhoneSimulator = Evaluation|iPhoneSimulator
+		Evaluation|Mixed Platforms = Evaluation|Mixed Platforms
+		Full|Any CPU = Full|Any CPU
+		Full|iPhone = Full|iPhone
+		Full|iPhoneSimulator = Full|iPhoneSimulator
+		Full|Mixed Platforms = Full|Mixed Platforms
+		Release|Any CPU = Release|Any CPU
+		Release|iPhone = Release|iPhone
+		Release|iPhoneSimulator = Release|iPhoneSimulator
+		Release|Mixed Platforms = Release|Mixed Platforms
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{063D30CA-03D6-4FDB-96D2-9665F0D9866A}.Ad-Hoc|Any CPU.ActiveCfg = Ad-Hoc|iPhone
+		{063D30CA-03D6-4FDB-96D2-9665F0D9866A}.Ad-Hoc|iPhone.ActiveCfg = Ad-Hoc|iPhone
+		{063D30CA-03D6-4FDB-96D2-9665F0D9866A}.Ad-Hoc|iPhone.Build.0 = Ad-Hoc|iPhone
+		{063D30CA-03D6-4FDB-96D2-9665F0D9866A}.Ad-Hoc|iPhoneSimulator.ActiveCfg = Ad-Hoc|iPhoneSimulator
+		{063D30CA-03D6-4FDB-96D2-9665F0D9866A}.Ad-Hoc|iPhoneSimulator.Build.0 = Ad-Hoc|iPhoneSimulator
+		{063D30CA-03D6-4FDB-96D2-9665F0D9866A}.Ad-Hoc|Mixed Platforms.ActiveCfg = Ad-Hoc|iPhone
+		{063D30CA-03D6-4FDB-96D2-9665F0D9866A}.Ad-Hoc|Mixed Platforms.Build.0 = Ad-Hoc|iPhone
+		{063D30CA-03D6-4FDB-96D2-9665F0D9866A}.AppStore|Any CPU.ActiveCfg = AppStore|iPhone
+		{063D30CA-03D6-4FDB-96D2-9665F0D9866A}.AppStore|iPhone.ActiveCfg = AppStore|iPhone
+		{063D30CA-03D6-4FDB-96D2-9665F0D9866A}.AppStore|iPhone.Build.0 = AppStore|iPhone
+		{063D30CA-03D6-4FDB-96D2-9665F0D9866A}.AppStore|iPhoneSimulator.ActiveCfg = AppStore|iPhoneSimulator
+		{063D30CA-03D6-4FDB-96D2-9665F0D9866A}.AppStore|iPhoneSimulator.Build.0 = AppStore|iPhoneSimulator
+		{063D30CA-03D6-4FDB-96D2-9665F0D9866A}.AppStore|Mixed Platforms.ActiveCfg = AppStore|iPhone
+		{063D30CA-03D6-4FDB-96D2-9665F0D9866A}.AppStore|Mixed Platforms.Build.0 = AppStore|iPhone
+		{063D30CA-03D6-4FDB-96D2-9665F0D9866A}.Debug|Any CPU.ActiveCfg = Debug|iPhone
+		{063D30CA-03D6-4FDB-96D2-9665F0D9866A}.Debug|iPhone.ActiveCfg = Debug|iPhone
+		{063D30CA-03D6-4FDB-96D2-9665F0D9866A}.Debug|iPhone.Build.0 = Debug|iPhone
+		{063D30CA-03D6-4FDB-96D2-9665F0D9866A}.Debug|iPhoneSimulator.ActiveCfg = Debug|iPhoneSimulator
+		{063D30CA-03D6-4FDB-96D2-9665F0D9866A}.Debug|iPhoneSimulator.Build.0 = Debug|iPhoneSimulator
+		{063D30CA-03D6-4FDB-96D2-9665F0D9866A}.Debug|Mixed Platforms.ActiveCfg = Debug|iPhone
+		{063D30CA-03D6-4FDB-96D2-9665F0D9866A}.Debug|Mixed Platforms.Build.0 = Debug|iPhone
+		{063D30CA-03D6-4FDB-96D2-9665F0D9866A}.Evaluation|Any CPU.ActiveCfg = AppStore|iPhone
+		{063D30CA-03D6-4FDB-96D2-9665F0D9866A}.Evaluation|iPhone.ActiveCfg = AppStore|iPhone
+		{063D30CA-03D6-4FDB-96D2-9665F0D9866A}.Evaluation|iPhone.Build.0 = AppStore|iPhone
+		{063D30CA-03D6-4FDB-96D2-9665F0D9866A}.Evaluation|iPhoneSimulator.ActiveCfg = AppStore|iPhoneSimulator
+		{063D30CA-03D6-4FDB-96D2-9665F0D9866A}.Evaluation|iPhoneSimulator.Build.0 = AppStore|iPhoneSimulator
+		{063D30CA-03D6-4FDB-96D2-9665F0D9866A}.Evaluation|Mixed Platforms.ActiveCfg = AppStore|iPhone
+		{063D30CA-03D6-4FDB-96D2-9665F0D9866A}.Evaluation|Mixed Platforms.Build.0 = AppStore|iPhone
+		{063D30CA-03D6-4FDB-96D2-9665F0D9866A}.Full|Any CPU.ActiveCfg = AppStore|iPhone
+		{063D30CA-03D6-4FDB-96D2-9665F0D9866A}.Full|iPhone.ActiveCfg = AppStore|iPhone
+		{063D30CA-03D6-4FDB-96D2-9665F0D9866A}.Full|iPhone.Build.0 = AppStore|iPhone
+		{063D30CA-03D6-4FDB-96D2-9665F0D9866A}.Full|iPhoneSimulator.ActiveCfg = AppStore|iPhoneSimulator
+		{063D30CA-03D6-4FDB-96D2-9665F0D9866A}.Full|iPhoneSimulator.Build.0 = AppStore|iPhoneSimulator
+		{063D30CA-03D6-4FDB-96D2-9665F0D9866A}.Full|Mixed Platforms.ActiveCfg = AppStore|iPhone
+		{063D30CA-03D6-4FDB-96D2-9665F0D9866A}.Full|Mixed Platforms.Build.0 = AppStore|iPhone
+		{063D30CA-03D6-4FDB-96D2-9665F0D9866A}.Release|Any CPU.ActiveCfg = Release|iPhone
+		{063D30CA-03D6-4FDB-96D2-9665F0D9866A}.Release|iPhone.ActiveCfg = Release|iPhone
+		{063D30CA-03D6-4FDB-96D2-9665F0D9866A}.Release|iPhone.Build.0 = Release|iPhone
+		{063D30CA-03D6-4FDB-96D2-9665F0D9866A}.Release|iPhoneSimulator.ActiveCfg = Release|iPhoneSimulator
+		{063D30CA-03D6-4FDB-96D2-9665F0D9866A}.Release|iPhoneSimulator.Build.0 = Release|iPhoneSimulator
+		{063D30CA-03D6-4FDB-96D2-9665F0D9866A}.Release|Mixed Platforms.ActiveCfg = Release|iPhone
+		{063D30CA-03D6-4FDB-96D2-9665F0D9866A}.Release|Mixed Platforms.Build.0 = Release|iPhone
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = ListCheckbox\ListCheckbox.csproj
+	EndGlobalSection
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 5
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = http://ap.thinkgeo.com:8081/defaultcollection
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = FileSystem\\FileSystem.csproj
+		SccProjectName1 = FileSystem
+		SccLocalPath1 = FileSystem
+		SccProjectUniqueName2 = DrawGraphics\\DrawGraphics.csproj
+		SccProjectName2 = DrawGraphics
+		SccLocalPath2 = DrawGraphics
+		SccProjectUniqueName3 = Base64Sample\\Base64Sample.csproj
+		SccProjectName3 = Base64Sample
+		SccLocalPath3 = Base64Sample
+	EndGlobalSection
+EndGlobal
