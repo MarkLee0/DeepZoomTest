@@ -10,7 +10,7 @@ namespace DeepZoom
 {
     [Register("DeepZoomTileView")]
     public class DeepZoomTileView : UIView
-    {
+    {  
         private double zoomLevel;
         private int tileWidth = 256;
         private int tileHeight = 256;
