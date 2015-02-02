@@ -11,8 +11,8 @@ using UIKit;
 
 namespace DeepZoom
 {
-	[Register ("ContainerView")]
-	partial class ContainerView
+    [Register("ContainerCALayer")]
+    partial class ContainerCALayer
 	{
 		void ReleaseDesignerOutlets ()
 		{
