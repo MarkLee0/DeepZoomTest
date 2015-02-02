@@ -90,6 +90,7 @@
   <ItemGroup>
     <Compile Include="ContainerView.cs" />
     <Compile Include="DeepZoomTileView.cs" />
+    <Compile Include="GestureArguments.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
     <Compile Include="TileMatrix.cs" />

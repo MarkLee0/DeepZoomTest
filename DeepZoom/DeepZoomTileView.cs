@@ -55,7 +55,7 @@ namespace DeepZoom
         {
             base.Draw(rect);
 
-            CrossLayer layer = new CrossLayer(zoomLevel, rowIndex, columnIndex);
+            CrossLayer layer = new CrossLayer(rowIndex, columnIndex);
             layer.Frame = new CGRect(0, 0, tileWidth, tileHeight);
             Layer.AddSublayer(layer);
             layer.SetNeedsDisplay();
@@ -70,17 +70,15 @@ namespace DeepZoom
 
         private class CrossLayer : CALayer
         {
-            private double zoomLevel;
             private int rowIndex;
             private int columnIndex;
             public CrossLayer()
-                : this(0.0f, 0, 0)
+                : this(0, 0)
             {
             }
 
-            public CrossLayer(double zoomLevel, int rowIndex, int columnIndex)
+            public CrossLayer(int rowIndex, int columnIndex)
             {
-                this.zoomLevel = zoomLevel;
                 this.rowIndex = rowIndex;
                 this.columnIndex = columnIndex;
             }
@@ -97,7 +95,7 @@ namespace DeepZoom
 
                 UIGraphics.PushContext(ctx);
                 ctx.SetFillColor(UIColor.Black.CGColor);
-                NSString number = new NSString(string.Format("{0}:{1}:{2}", zoomLevel, rowIndex, columnIndex));
+                NSString number = new NSString(string.Format("{0}:{1}", columnIndex, rowIndex));
                 number.DrawString(new CGPoint(Frame.Width * .5f - 18, Frame.Height * .5f - 8), UIFont.FromName("Arial", 12));
                 UIGraphics.PopContext();
             }
