@@ -15,7 +15,7 @@ namespace DeepZoom
         private CGRect BoundingBox;
         private CGPoint center;
 
-        public TileMatrix(int tileWidth, int tileHeight, CGPoint center, int zoomLevel)
+        public TileMatrix(int tileWidth, int tileHeight, CGPoint center, double zoomLevel)
         {
             this.tileWidth = tileWidth;
             this.tileHeight = tileHeight;

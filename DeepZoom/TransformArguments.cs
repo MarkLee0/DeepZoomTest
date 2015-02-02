@@ -4,9 +4,9 @@ using System.Collections.ObjectModel;
 
 namespace DeepZoom
 {
-    public class GestureArguments
+    public class TransformArguments
     {
-        public GestureArguments()
+        public TransformArguments()
         {
             ScreenPointers = new Collection<CGPoint>();
         }
@@ -15,7 +15,8 @@ namespace DeepZoom
         public nfloat ScreenY { get; set; }
         public nfloat ScreenWidth { get; set; }
         public nfloat ScreenHeight { get; set; }
-        public CGRect CurrentExtent { get; set; }
         public Collection<CGPoint> ScreenPointers { get; set; }
+        public nfloat OffsetX { get; set; }
+        public nfloat OffsetY { get; set; }
     }
 }
