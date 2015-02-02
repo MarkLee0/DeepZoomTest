@@ -68,6 +68,8 @@ namespace DeepZoom
 
         private void btnApply_TouchUpInside(object sender, EventArgs e)
         {
+            panActionTimeQueue.Clear();
+            lblPanResult.Text = string.Empty;
             RefreshTileView();
         }
 
@@ -85,6 +87,11 @@ namespace DeepZoom
 
         private void PanTimeMonitorAction(long time)
         {
+            panResult.Clear();
+            if (panActionTimeQueue.Count > 6)
+            {
+                panActionTimeQueue.Dequeue();
+            }
             panActionTimeQueue.Enqueue(time);
 
             foreach (var item in panActionTimeQueue)
