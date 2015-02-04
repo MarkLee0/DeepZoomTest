@@ -57,10 +57,7 @@ namespace DeepZoom
                 case UIGestureRecognizerState.Began:
                     break;
                 case UIGestureRecognizerState.Changed:
-                    foreach (var currentTile in containerView.Subviews.OfType<DeepZoomTileView>())
-                    {
-                        containerView.TransformTile(currentTile, arguments.TransformArguments);
-                    }
+                    containerView.TransformTile(arguments.TransformArguments);
                     break;
                 case UIGestureRecognizerState.Ended:
                     //containerView.RefreshZoomTileView(arguments);

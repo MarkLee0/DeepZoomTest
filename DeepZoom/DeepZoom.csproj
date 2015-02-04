@@ -90,8 +90,8 @@
   <ItemGroup>
     <Compile Include="CALayer\ContainerCALayer.cs" />
     <Compile Include="CALayer\DeepZoomTileCALayer.cs" />
-    <Compile Include="ContainerView.cs" />
-    <Compile Include="DeepZoomTileView.cs" />
+    <Compile Include="UIView\ContainerView.cs" />
+    <Compile Include="UIView\DeepZoomTileView.cs" />
     <Compile Include="Model\RefreshArguments.cs" />
     <Compile Include="Model\TransformArguments.cs" />
     <Compile Include="Main.cs" />
@@ -119,8 +119,6 @@
   <ItemGroup>
     <Content Include="Entitlements.plist" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="UIView\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
 </Project>

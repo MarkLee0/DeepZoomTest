@@ -56,10 +56,7 @@ namespace DeepZoom
                 }
             }
             if (arguments.TransformArguments != null)
-                foreach (var drawnTile in drawnTiles.Select(item => item.Value))
-                {
-                    TransformTile(drawnTile, arguments.TransformArguments);
-                }
+                TransformTile(arguments.TransformArguments);
 
             foreach (var drawingTile in drawingTiles)
             {
@@ -78,9 +75,12 @@ namespace DeepZoom
             }
         }
 
-        public void TransformTile(DeepZoomTileView drawnTile, TransformArguments arguments)
+        public void TransformTile(TransformArguments arguments)
         {
-            drawnTile.Center = new CGPoint(drawnTile.Center.X + arguments.OffsetX, drawnTile.Center.Y + arguments.OffsetY);
+            foreach (var drawnTile in Subviews.OfType<DeepZoomTileView>())
+            {
+                drawnTile.Center = new CGPoint(drawnTile.Center.X + arguments.OffsetX, drawnTile.Center.Y + arguments.OffsetY);
+            }
         }
     }
 }
