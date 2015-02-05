@@ -34,18 +34,23 @@ namespace DeepZoom
 
             foreach (var currentTile in Subviews.OfType<DeepZoomTileView>())
             {
-                string key = string.Format(CultureInfo.InvariantCulture, "{0},{1},{2}", currentTile.ZoomLevel, currentTile.ColumnIndex, currentTile.RowIndex);
-                drawnTiles[key] = currentTile;
-
-                if (currentTile.Frame.X > currentExtent.X + currentExtent.Width ||
-                    currentTile.Frame.Y > currentExtent.Y + currentExtent.Height ||
-                    currentTile.Frame.X + currentTile.Frame.Width < currentExtent.X ||
-                    currentTile.Frame.Y + currentTile.Frame.Height < currentExtent.Y)
+                if (currentTile.Frame.X > currentExtent.Width ||
+                    currentTile.Frame.Y > currentExtent.Height ||
+                    currentTile.Frame.X + currentTile.Frame.Width < 0 ||
+                    currentTile.Frame.Y + currentTile.Frame.Height < 0)
                 {
                     currentTile.RemoveFromSuperview();
                     currentTile.Dispose();
                 }
+                else
+                {
+                    string key = string.Format(CultureInfo.InvariantCulture, "{0},{1},{2}", currentTile.ZoomLevel, currentTile.ColumnIndex, currentTile.RowIndex);
+                    drawnTiles[key] = currentTile;
+                }
             }
+
+            if (arguments.TransformArguments != null)
+                TransformTile(arguments.TransformArguments);
 
             foreach (var drawingTile in drawingTiles)
             {
@@ -59,12 +64,13 @@ namespace DeepZoom
                     tileView.ZoomLevel = arguments.ZoomLevel;
                     tileView.TileHeight = tileView.TileWidth = arguments.TileSize;
                     tileView.Frame = drawingTile.BoundingBox;
+                    if (arguments.TransformArguments != null)
+                    {
+                        tileView.Center = new CGPoint(tileView.Center.X - arguments.TransformArguments.OffsetX, tileView.Center.Y - arguments.TransformArguments.OffsetY);
+                    }
                     AddSubview(tileView);
                 }
             }
-
-            if (arguments.TransformArguments != null)
-                TransformTile(arguments.TransformArguments);
         }
 
         private void TransformTile(TransformArguments arguments)
