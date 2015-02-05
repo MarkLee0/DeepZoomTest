@@ -22,18 +22,13 @@ namespace DeepZoom
         public ContainerView(CGRect bounds)
             : base(bounds)
         {
-            Initialize();
         }
 
-        void Initialize()
-        {
-
-        }
 
         public void RefreshZoomTileView(RefreshArguments arguments)
         {
             TileMatrix tileMatrix = new TileMatrix(arguments.TileSize, arguments.TileSize, arguments.DefaultCenter, arguments.ZoomLevel, arguments.Scale);
-            IEnumerable<TileMatrixCell> drawingTiles = tileMatrix.GetTileMatrixCells(arguments.CurrentCenter, currentExtent);
+            IEnumerable<TileMatrixCell> drawingTiles = tileMatrix.GetTileMatrixCells(currentExtent);
 
             Dictionary<string, DeepZoomTileView> drawnTiles = new Dictionary<string, DeepZoomTileView>();
 
@@ -51,8 +46,6 @@ namespace DeepZoom
                     currentTile.Dispose();
                 }
             }
-            if (arguments.TransformArguments != null)
-                TransformTile(arguments.TransformArguments);
 
             foreach (var drawingTile in drawingTiles)
             {
@@ -69,6 +62,9 @@ namespace DeepZoom
                     AddSubview(tileView);
                 }
             }
+
+            if (arguments.TransformArguments != null)
+                TransformTile(arguments.TransformArguments);
         }
 
         private void TransformTile(TransformArguments arguments)

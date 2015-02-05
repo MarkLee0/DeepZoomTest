@@ -28,11 +28,11 @@ namespace DeepZoom
         public void RefreshZoomTileView(RefreshArguments arguments)
         {
             TileMatrix tileMatrix = new TileMatrix(arguments.TileSize, arguments.TileSize, arguments.CurrentCenter, arguments.ZoomLevel, arguments.Scale);
-            IEnumerable<TileMatrixCell> drawingTiles = tileMatrix.GetTileMatrixCells(arguments.CurrentCenter, currentExtent);
+            IEnumerable<TileMatrixCell> drawingTiles = tileMatrix.GetTileMatrixCells(currentExtent);
 
-            Dictionary<string, DeepZoomTileView> drawnTiles = new Dictionary<string, DeepZoomTileView>();
+            Dictionary<string, DeepZoomTileCAlayer> drawnTiles = new Dictionary<string, DeepZoomTileCAlayer>();
 
-            foreach (var currentTile in Sublayers.OfType<DeepZoomTileView>())
+            foreach (var currentTile in Sublayers.OfType<DeepZoomTileCAlayer>())
             {
                 string key = string.Format(CultureInfo.InvariantCulture, "{0},{1},{2}", currentTile.ZoomLevel, currentTile.ColumnIndex, currentTile.RowIndex);
                 drawnTiles[key] = currentTile;
@@ -42,7 +42,7 @@ namespace DeepZoom
                     currentTile.Frame.X + currentTile.Frame.Width < currentExtent.X ||
                     currentTile.Frame.Y + currentTile.Frame.Height < currentExtent.Y)
                 {
-                    currentTile.RemoveFromSuperview();
+                    currentTile.RemoveFromSuperLayer(); ;
                     currentTile.Dispose();
                 }
             }
@@ -69,9 +69,9 @@ namespace DeepZoom
             }
         }
 
-        public void TransformTile(DeepZoomTileView drawnTile, TransformArguments arguments)
+        public void TransformTile(DeepZoomTileCAlayer drawnTile, TransformArguments arguments)
         {
-            drawnTile.Center = new CGPoint(drawnTile.Center.X + arguments.OffsetX, drawnTile.Center.Y + arguments.OffsetY);
+            drawnTile.Position = new CGPoint(drawnTile.Position.X + arguments.OffsetX, drawnTile.Position.Y + arguments.OffsetY);
         }
     }
 }

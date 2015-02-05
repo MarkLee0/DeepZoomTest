@@ -7,9 +7,8 @@ namespace DeepZoom
 {
     public class TileMatrix
     {
-        private int tileWidth;
-        private int tileHeight;
-        private CGPoint startLocation;
+        private nfloat tileWidth;
+        private nfloat tileHeight;
         private int rowCount;
         private int columnCount;
         private CGRect BoundingBox;
@@ -29,58 +28,48 @@ namespace DeepZoom
             BoundingBox = new CGRect(x, y, tileWidth * columnCount, tileHeight * rowCount);
         }
 
-        public IEnumerable<TileMatrixCell> GetTileMatrixCells(CGPoint currentCenter, CGRect currentExtent)
+        public IEnumerable<TileMatrixCell> GetTileMatrixCells(CGRect currentExtent)
         {
             Collection<TileMatrixCell> drawingMatrixCells = new Collection<TileMatrixCell>();
 
             int minColumnIndex = Convert.ToInt32(Math.Floor((currentExtent.X - BoundingBox.X) / tileWidth));
-            int maxColumnIndex = Convert.ToInt32(Math.Floor((currentExtent.X + currentExtent.Width - BoundingBox.X) / tileWidth));
+            int maxColumnIndex = Convert.ToInt32(Math.Ceiling((currentExtent.X + currentExtent.Width - BoundingBox.X) / tileWidth));
             int minRowIndex = Convert.ToInt32(Math.Floor((currentExtent.Y - BoundingBox.Y) / tileHeight));
-            int maxRowIndex = Convert.ToInt32(Math.Floor((currentExtent.Y + currentExtent.Height - BoundingBox.Y) / tileHeight));
+            int maxRowIndex = Convert.ToInt32(Math.Ceiling((currentExtent.Y + currentExtent.Height - BoundingBox.Y) / tileHeight));
 
             if (minColumnIndex < 0) minColumnIndex = 0;
             if (maxColumnIndex >= columnCount) maxColumnIndex = columnCount;
             if (minRowIndex < 0) minRowIndex = 0;
             if (maxRowIndex >= rowCount) maxRowIndex = rowCount;
 
-            int rowNumber = maxRowIndex - minRowIndex;
-            int columnNumber = maxColumnIndex - minColumnIndex;
-
-            startLocation = CalculateStartLocation(currentCenter, rowNumber, columnNumber);
             nfloat tileScale = (nfloat)scale;
 
-            for (int row = minRowIndex; row < maxRowIndex; row++)
+            if (maxRowIndex == 1 && maxColumnIndex == 1)
             {
-                for (int column = minColumnIndex; column < maxColumnIndex; column++)
-                {
-                    nfloat x = startLocation.X + tileWidth * tileScale * (column - minColumnIndex);
-                    nfloat y = startLocation.Y + tileHeight * tileScale * (row - minRowIndex);
+                nfloat x = BoundingBox.X - tileWidth * .5f;
+                nfloat y = BoundingBox.Y - tileHeight * .5f;
 
-                    CGRect cellExtent = new CGRect(x, y, tileWidth * tileScale, tileHeight * tileScale);
-                    TileMatrixCell returnCell = new TileMatrixCell(row, column, cellExtent);
-                    drawingMatrixCells.Add(returnCell);
+                CGRect cellExtent = new CGRect(x, y, tileWidth * tileScale, tileHeight * tileScale);
+                TileMatrixCell returnCell = new TileMatrixCell(0, 0, cellExtent);
+                drawingMatrixCells.Add(returnCell);
+            }
+            else
+            {
+                for (int row = minRowIndex; row < maxRowIndex; row++)
+                {
+                    for (int column = minColumnIndex; column < maxColumnIndex; column++)
+                    {
+                        nfloat x = BoundingBox.X + tileWidth * tileScale * column;
+                        nfloat y = BoundingBox.Y + tileHeight * tileScale * row;
+
+                        CGRect cellExtent = new CGRect(x, y, tileWidth * tileScale, tileHeight * tileScale);
+                        TileMatrixCell returnCell = new TileMatrixCell(row, column, cellExtent);
+                        drawingMatrixCells.Add(returnCell);
+                    }
                 }
             }
 
             return drawingMatrixCells;
-        }
-
-        private CGPoint CalculateStartLocation(CGPoint centerPoint, int row, int column)
-        {
-            CGPoint upperLeft = new CGPoint();
-
-            nfloat xOffset = (nfloat)column * .5f * tileWidth;
-            nfloat yOffset = (nfloat)row * .5f * tileHeight;
-            if (row == 1 && column == 1)
-            {
-                xOffset = tileWidth * .5f;
-                yOffset = tileHeight * .5f;
-            }
-
-            upperLeft.X = centerPoint.X - xOffset;
-            upperLeft.Y = centerPoint.Y - yOffset;
-
-            return upperLeft;
         }
     }
 }

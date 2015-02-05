@@ -81,11 +81,15 @@ namespace DeepZoom
             arguments.DefaultCenter = defaultPoint;
             nfloat offsetX = arguments.TransformArguments.OffsetX;
             nfloat offsetY = arguments.TransformArguments.OffsetY;
-            arguments.CurrentCenter = currentPoint = new CGPoint(currentPoint.X + offsetX, currentPoint.Y + offsetY);
+            arguments.CurrentCenter = currentPoint = new CGPoint(currentPoint.X - offsetX, currentPoint.Y - offsetY);
             arguments.Scale = 1.0;
             containerView.CurrentExtent = new CGRect(new CGPoint(containerView.CurrentExtent.X + offsetX, containerView.CurrentExtent.Y + offsetY), containerView.CurrentExtent.Size);
 
             containerView.RefreshZoomTileView(arguments);
+            if (gestureRecognizer.State == UIGestureRecognizerState.Ended)
+            {
+                startPoint = CGPoint.Empty;
+            }
 
             sw.Stop();
             PanTimeMonitorAction(sw.ElapsedMilliseconds);
