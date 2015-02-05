@@ -43,36 +43,6 @@ namespace DeepZoom
             RefreshTileView();
         }
 
-        private void GestureRecognizerHandler(UIPanGestureRecognizer gestureRecognizer)
-        {
-            Stopwatch sw = Stopwatch.StartNew();
-            RefreshArguments arguments = new RefreshArguments();
-            arguments.ZoomLevel = double.Parse(txtZoomLevel.Text);
-            arguments.TileSize = int.Parse(txtTileSize.Text);
-            arguments.TransformArguments = CollectTransformArguments(gestureRecognizer);
-            arguments.DefaultCenter = defaultPoint;
-            arguments.CurrentCenter = currentPoint = new CGPoint(currentPoint.X + arguments.TransformArguments.OffsetX, currentPoint.Y + arguments.TransformArguments.OffsetY);
-            arguments.Scale = 1.0;
-
-            switch (gestureRecognizer.State)
-            {
-                case UIGestureRecognizerState.Began:
-                    break;
-                case UIGestureRecognizerState.Changed:
-                    containerView.TransformTile(arguments.TransformArguments);
-                    break;
-                case UIGestureRecognizerState.Ended:
-                    //containerView.RefreshZoomTileView(arguments);
-                    break;
-                default:
-                    break;
-            }
-
-            sw.Stop();
-            PanTimeMonitorAction(sw.ElapsedMilliseconds);
-        }
-
-
         private void InitializeComponents()
         {
             UIButton btnApply = new UIButton(UIButtonType.System);
@@ -101,6 +71,26 @@ namespace DeepZoom
             View.AddSubview(lblPanResult);
         }
 
+        private void GestureRecognizerHandler(UIPanGestureRecognizer gestureRecognizer)
+        {
+            Stopwatch sw = Stopwatch.StartNew();
+            RefreshArguments arguments = new RefreshArguments();
+            arguments.ZoomLevel = double.Parse(txtZoomLevel.Text);
+            arguments.TileSize = int.Parse(txtTileSize.Text);
+            arguments.TransformArguments = CollectTransformArguments(gestureRecognizer);
+            arguments.DefaultCenter = defaultPoint;
+            nfloat offsetX = arguments.TransformArguments.OffsetX;
+            nfloat offsetY = arguments.TransformArguments.OffsetY;
+            arguments.CurrentCenter = currentPoint = new CGPoint(currentPoint.X + offsetX, currentPoint.Y + offsetY);
+            arguments.Scale = 1.0;
+            containerView.CurrentExtent = new CGRect(new CGPoint(containerView.CurrentExtent.X + offsetX, containerView.CurrentExtent.Y + offsetY), containerView.CurrentExtent.Size);
+
+            containerView.RefreshZoomTileView(arguments);
+
+            sw.Stop();
+            PanTimeMonitorAction(sw.ElapsedMilliseconds);
+        }
+
         private void btnApply_TouchUpInside(object sender, EventArgs e)
         {
             panActionTimeQueue.Clear();
@@ -118,6 +108,7 @@ namespace DeepZoom
             arguments.DefaultCenter = defaultPoint;
             arguments.CurrentCenter = defaultPoint;
             arguments.Scale = 1.0;
+            containerView.CurrentExtent = new CGRect(0, 0, View.Frame.Width, View.Frame.Height);
 
             foreach (var tileView in containerView.Subviews.OfType<DeepZoomTileView>())
             {
@@ -125,11 +116,10 @@ namespace DeepZoom
                 tileView.Dispose();
             }
 
-            //for (int i = 0; i < 10; i++)
-            //{
-            //    containerView.RefreshZoomTileView(arguments);
-            //}
-            containerView.RefreshZoomTileView(arguments);
+            for (int i = 0; i < 10; i++)
+            {
+                containerView.RefreshZoomTileView(arguments);
+            }
 
             sw.Stop();
             lblResult.Text = string.Format("Redraw: {0} ms", sw.ElapsedMilliseconds / 10);
@@ -160,8 +150,8 @@ namespace DeepZoom
             if (startPoint.Equals(CGPoint.Empty))
                 startPoint = location;
 
-            nfloat offsetX = location.X - startPoint.X;
-            nfloat offsetY = location.Y - startPoint.Y;
+            nfloat offsetX = startPoint.X - location.X;
+            nfloat offsetY = startPoint.Y - location.Y;
 
             arguments.OffsetX = offsetX;
             arguments.OffsetY = offsetY;

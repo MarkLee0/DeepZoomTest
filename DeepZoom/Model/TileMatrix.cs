@@ -13,24 +13,23 @@ namespace DeepZoom
         private int rowCount;
         private int columnCount;
         private CGRect BoundingBox;
-        private CGPoint center;
         private double scale;
 
         public TileMatrix(int tileWidth, int tileHeight, CGPoint center, double zoomLevel, double scale)
         {
             this.tileWidth = tileWidth;
             this.tileHeight = tileHeight;
-            this.center = center;
             this.scale = scale;
 
-            rowCount = columnCount = (int)Math.Pow(2, zoomLevel);
-            nfloat x = center.X - tileWidth * columnCount * .5f;
-            nfloat y = center.Y - tileHeight * rowCount * .5f;
+            //rowCount = columnCount = (int)scale * (int)Math.Pow(2, zoomLevel);
+            rowCount = columnCount = (int)scale << (int)zoomLevel;
+            nfloat x = center.X - tileWidth * (columnCount >> 1);
+            nfloat y = center.Y - tileHeight * (rowCount >> 1);
 
             BoundingBox = new CGRect(x, y, tileWidth * columnCount, tileHeight * rowCount);
         }
 
-        public IEnumerable<TileMatrixCell> GetTileMatrixCells(CGRect currentExtent)
+        public IEnumerable<TileMatrixCell> GetTileMatrixCells(CGPoint currentCenter, CGRect currentExtent)
         {
             Collection<TileMatrixCell> drawingMatrixCells = new Collection<TileMatrixCell>();
 
@@ -47,7 +46,7 @@ namespace DeepZoom
             int rowNumber = maxRowIndex - minRowIndex;
             int columnNumber = maxColumnIndex - minColumnIndex;
 
-            startLocation = CalculateStartLocation(center, rowNumber, columnNumber);
+            startLocation = CalculateStartLocation(currentCenter, rowNumber, columnNumber);
             nfloat tileScale = (nfloat)scale;
 
             for (int row = minRowIndex; row < maxRowIndex; row++)

@@ -1,3 +1,4 @@
+using System;
 using CoreGraphics;
 using Foundation;
 using System.Collections.Generic;
@@ -31,13 +32,8 @@ namespace DeepZoom
 
         public void RefreshZoomTileView(RefreshArguments arguments)
         {
-            foreach (var tile in Subviews.OfType<DeepZoomTileView>())
-            {
-                tile.RemoveFromSuperview();
-            }
-
             TileMatrix tileMatrix = new TileMatrix(arguments.TileSize, arguments.TileSize, arguments.DefaultCenter, arguments.ZoomLevel, arguments.Scale);
-            IEnumerable<TileMatrixCell> drawingTiles = tileMatrix.GetTileMatrixCells(currentExtent);
+            IEnumerable<TileMatrixCell> drawingTiles = tileMatrix.GetTileMatrixCells(arguments.CurrentCenter, currentExtent);
 
             Dictionary<string, DeepZoomTileView> drawnTiles = new Dictionary<string, DeepZoomTileView>();
 
@@ -75,11 +71,11 @@ namespace DeepZoom
             }
         }
 
-        public void TransformTile(TransformArguments arguments)
+        private void TransformTile(TransformArguments arguments)
         {
             foreach (var drawnTile in Subviews.OfType<DeepZoomTileView>())
             {
-                drawnTile.Center = new CGPoint(drawnTile.Center.X + arguments.OffsetX, drawnTile.Center.Y + arguments.OffsetY);
+                drawnTile.Center = new CGPoint(drawnTile.Center.X - arguments.OffsetX, drawnTile.Center.Y - arguments.OffsetY);
             }
         }
     }
