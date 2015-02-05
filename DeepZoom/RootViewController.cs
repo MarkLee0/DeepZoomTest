@@ -34,7 +34,7 @@ namespace DeepZoom
             panActionTimeQueue = new Queue(6);
             panResult = new StringBuilder();
             containerView = new ContainerView(View.Frame);
-            containerView.CurrentExtent = new CGRect(-View.Frame.Width * .5f, -View.Frame.Height * .5f, View.Frame.Width, View.Frame.Height);
+            containerView.CurrentExtent = new CGRect(0, 0, View.Frame.Width, View.Frame.Height);
             containerView.AddGestureRecognizer(new UIPanGestureRecognizer(GestureRecognizerHandler));
 
             View.AddSubview(containerView);
@@ -49,8 +49,10 @@ namespace DeepZoom
             RefreshArguments arguments = new RefreshArguments();
             arguments.ZoomLevel = double.Parse(txtZoomLevel.Text);
             arguments.TileSize = int.Parse(txtTileSize.Text);
-            arguments.TransformArguments = CollectArguments(gestureRecognizer);
+            arguments.TransformArguments = CollectTransformArguments(gestureRecognizer);
+            arguments.DefaultCenter = defaultPoint;
             arguments.CurrentCenter = currentPoint = new CGPoint(currentPoint.X + arguments.TransformArguments.OffsetX, currentPoint.Y + arguments.TransformArguments.OffsetY);
+            arguments.Scale = 1.0;
 
             switch (gestureRecognizer.State)
             {
@@ -113,7 +115,9 @@ namespace DeepZoom
             RefreshArguments arguments = new RefreshArguments();
             arguments.ZoomLevel = double.Parse(txtZoomLevel.Text);
             arguments.TileSize = int.Parse(txtTileSize.Text);
+            arguments.DefaultCenter = defaultPoint;
             arguments.CurrentCenter = defaultPoint;
+            arguments.Scale = 1.0;
 
             foreach (var tileView in containerView.Subviews.OfType<DeepZoomTileView>())
             {
@@ -121,10 +125,11 @@ namespace DeepZoom
                 tileView.Dispose();
             }
 
-            for (int i = 0; i < 10; i++)
-            {
-                containerView.RefreshZoomTileView(arguments);
-            }
+            //for (int i = 0; i < 10; i++)
+            //{
+            //    containerView.RefreshZoomTileView(arguments);
+            //}
+            containerView.RefreshZoomTileView(arguments);
 
             sw.Stop();
             lblResult.Text = string.Format("Redraw: {0} ms", sw.ElapsedMilliseconds / 10);
@@ -147,7 +152,7 @@ namespace DeepZoom
             lblPanResult.Text = panResult.ToString();
         }
 
-        private TransformArguments CollectArguments(UIGestureRecognizer e)
+        private TransformArguments CollectTransformArguments(UIGestureRecognizer e)
         {
             TransformArguments arguments = new TransformArguments();
 

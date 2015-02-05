@@ -27,7 +27,7 @@ namespace DeepZoom
 
         public void RefreshZoomTileView(RefreshArguments arguments)
         {
-            TileMatrix tileMatrix = new TileMatrix(arguments.TileSize, arguments.TileSize, arguments.CurrentCenter, arguments.ZoomLevel);
+            TileMatrix tileMatrix = new TileMatrix(arguments.TileSize, arguments.TileSize, arguments.CurrentCenter, arguments.ZoomLevel, arguments.Scale);
             IEnumerable<TileMatrixCell> drawingTiles = tileMatrix.GetTileMatrixCells(currentExtent);
 
             Dictionary<string, DeepZoomTileView> drawnTiles = new Dictionary<string, DeepZoomTileView>();

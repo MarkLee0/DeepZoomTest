@@ -14,16 +14,18 @@ namespace DeepZoom
         private int columnCount;
         private CGRect BoundingBox;
         private CGPoint center;
+        private double scale;
 
-        public TileMatrix(int tileWidth, int tileHeight, CGPoint center, double zoomLevel)
+        public TileMatrix(int tileWidth, int tileHeight, CGPoint center, double zoomLevel, double scale)
         {
             this.tileWidth = tileWidth;
             this.tileHeight = tileHeight;
             this.center = center;
+            this.scale = scale;
 
             rowCount = columnCount = (int)Math.Pow(2, zoomLevel);
-            nfloat x = center.X - tileWidth * columnCount;
-            nfloat y = center.Y - tileHeight * rowCount;
+            nfloat x = center.X - tileWidth * columnCount * .5f;
+            nfloat y = center.Y - tileHeight * rowCount * .5f;
 
             BoundingBox = new CGRect(x, y, tileWidth * columnCount, tileHeight * rowCount);
         }
@@ -46,15 +48,16 @@ namespace DeepZoom
             int columnNumber = maxColumnIndex - minColumnIndex;
 
             startLocation = CalculateStartLocation(center, rowNumber, columnNumber);
+            nfloat tileScale = (nfloat)scale;
 
             for (int row = minRowIndex; row < maxRowIndex; row++)
             {
                 for (int column = minColumnIndex; column < maxColumnIndex; column++)
                 {
-                    nfloat x = startLocation.X + tileWidth * (column - minColumnIndex);
-                    nfloat y = startLocation.Y + tileHeight * (row - minRowIndex);
+                    nfloat x = startLocation.X + tileWidth * tileScale * (column - minColumnIndex);
+                    nfloat y = startLocation.Y + tileHeight * tileScale * (row - minRowIndex);
 
-                    CGRect cellExtent = new CGRect(x, y, tileWidth, tileHeight);
+                    CGRect cellExtent = new CGRect(x, y, tileWidth * tileScale, tileHeight * tileScale);
                     TileMatrixCell returnCell = new TileMatrixCell(row, column, cellExtent);
                     drawingMatrixCells.Add(returnCell);
                 }
@@ -67,8 +70,8 @@ namespace DeepZoom
         {
             CGPoint upperLeft = new CGPoint();
 
-            nfloat xOffset = (nfloat)Math.Ceiling(column * .5f) * tileWidth;
-            nfloat yOffset = (nfloat)Math.Ceiling(row * .5f) * tileHeight;
+            nfloat xOffset = (nfloat)column * .5f * tileWidth;
+            nfloat yOffset = (nfloat)row * .5f * tileHeight;
             if (row == 1 && column == 1)
             {
                 xOffset = tileWidth * .5f;

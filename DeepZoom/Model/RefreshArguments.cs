@@ -7,6 +7,7 @@ namespace DeepZoom
         private int tileSize;
         private double zoomLevel;
         private CGPoint currentCenter;
+        private CGPoint defaultCenter;
         private TransformArguments transformArguments;
 
         public int TileSize
@@ -14,6 +15,13 @@ namespace DeepZoom
             get { return tileSize; }
             set { tileSize = value; }
         }
+
+        public CGPoint DefaultCenter
+        {
+            get { return defaultCenter; }
+            set { defaultCenter = value; }
+        }
+
         public CGPoint CurrentCenter
         {
             get { return currentCenter; }
@@ -31,5 +39,7 @@ namespace DeepZoom
             get { return transformArguments; }
             set { transformArguments = value; }
         }
+
+        public double Scale { get; set; }
     }
 }
