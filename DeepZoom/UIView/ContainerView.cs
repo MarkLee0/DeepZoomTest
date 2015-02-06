@@ -1,3 +1,4 @@
+using System;
 using CoreGraphics;
 using Foundation;
 using System.Collections.Generic;
@@ -40,20 +41,23 @@ namespace DeepZoom
                 if (currentTile.Frame.X > currentExtent.Width ||
                     currentTile.Frame.Y > currentExtent.Height ||
                     currentTile.Frame.X + currentTile.Frame.Width < 0 ||
-                    currentTile.Frame.Y + currentTile.Frame.Height < 0)
+                    currentTile.Frame.Y + currentTile.Frame.Height < 0 ||
+                    currentTile.ZoomLevel != arguments.ZoomLevel)
                 {
-                    if (tileViewCaches.Count >= 100)
-                    {
-                        string lastKey = tileViewCaches.Last().Key;
-                        tileViewCaches[lastKey].RemoveFromSuperview();
-                        tileViewCaches[lastKey].Dispose();
-                        tileViewCaches.Remove(lastKey);
-                    }
-                    if (!tileViewCaches.ContainsKey(key))
-                    {
-                        currentTile.Hidden = true;
-                        tileViewCaches.Add(key, currentTile);
-                    }
+                    currentTile.RemoveFromSuperview();
+                    currentTile.Dispose();
+                    //if (tileViewCaches.Count >= 100)
+                    //{
+                    //    string lastKey = tileViewCaches.Last().Key;
+                    //    tileViewCaches[lastKey].RemoveFromSuperview();
+                    //    tileViewCaches[lastKey].Dispose();
+                    //    tileViewCaches.Remove(lastKey);
+                    //}
+                    //if (!tileViewCaches.ContainsKey(key))
+                    //{
+                    //    currentTile.Hidden = true;
+                    //    tileViewCaches.Add(key, currentTile);
+                    //}
                 }
                 else
                 {
@@ -92,7 +96,19 @@ namespace DeepZoom
         {
             foreach (var drawnTile in Subviews.OfType<DeepZoomTileView>())
             {
-                drawnTile.Center = new CGPoint(drawnTile.Center.X + arguments.OffsetX, drawnTile.Center.Y + arguments.OffsetY);
+                if (arguments.Scale == 0.0f)
+                {
+                    drawnTile.Center = new CGPoint(drawnTile.Center.X + arguments.OffsetX, drawnTile.Center.Y + arguments.OffsetY);
+                }
+                else
+                {
+                    nfloat left = (nfloat)Math.Ceiling((drawnTile.Frame.X - currentExtent.X));
+                    nfloat top = (nfloat)Math.Ceiling((drawnTile.Frame.Y - currentExtent.Y));
+                    nfloat width = drawnTile.TileWidth;
+                    nfloat height = drawnTile.TileHeight;
+
+                    drawnTile.Frame = new CGRect(left, top, width, height);
+                }
             }
         }
     }

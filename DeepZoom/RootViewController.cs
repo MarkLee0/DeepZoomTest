@@ -12,12 +12,17 @@ namespace DeepZoom
     {
         private UITextField txtTileSize;
         private UITextField txtZoomLevel;
-        private UILabel lblResult;
-        private UILabel lblPanResult;
+        private UILabel lblRedrawResult;
+        private UILabel lblGestureResult;
         private ContainerView containerView;
         private Queue panActionTimeQueue;
         private StringBuilder panResult;
         private CGPoint startPoint = CGPoint.Empty;
+        private CGPoint middlePoint = CGPoint.Empty;
+        private double zoomLevel;
+        private int tileSize;
+        private nfloat extentWidth;
+        private nfloat extentHeight;
 
         public RootViewController(IntPtr handle)
             : base(handle)
@@ -32,12 +37,65 @@ namespace DeepZoom
             panResult = new StringBuilder();
             containerView = new ContainerView(View.Frame);
             containerView.CurrentExtent = new CGRect(0, 0, View.Frame.Width, View.Frame.Height);
-            containerView.AddGestureRecognizer(new UIPanGestureRecognizer(GestureRecognizerHandler));
+            containerView.AddGestureRecognizer(new UIPanGestureRecognizer(PanGestureRecognizerHandler));
+            containerView.AddGestureRecognizer(new UIPinchGestureRecognizer(PinchGestureRecognizerHandler));
 
             View.AddSubview(containerView);
             InitializeComponents();
 
             RefreshTileView();
+        }
+
+        private void PinchGestureRecognizerHandler(UIPinchGestureRecognizer gestureRecognizer)
+        {
+            Stopwatch sw = Stopwatch.StartNew();
+
+            RefreshArguments arguments = CollectArguments(gestureRecognizer);
+            if (middlePoint.Equals(CGPoint.Empty))
+            {
+                if (gestureRecognizer.NumberOfTouches <= 1) return;
+                CGPoint point1 = gestureRecognizer.LocationOfTouch(0, containerView);
+                CGPoint point2 = gestureRecognizer.LocationOfTouch(1, containerView);
+                nfloat x = point1.X - point2.X;
+                nfloat y = point1.Y - point2.Y;
+
+                middlePoint = new CGPoint(point1.X + x, point1.Y + y);
+            }
+
+            if (tileSize == 0)
+            {
+                zoomLevel = arguments.ZoomLevel;
+                tileSize = arguments.TileSize;
+
+                extentWidth = containerView.CurrentExtent.Width;
+                extentHeight = containerView.CurrentExtent.Height;
+            }
+
+            arguments.Scale = gestureRecognizer.Scale;
+
+            arguments.ZoomLevel = zoomLevel * gestureRecognizer.Scale;
+            arguments.TileSize = (int)(tileSize * gestureRecognizer.Scale);
+            txtZoomLevel.Text = arguments.ZoomLevel.ToString();
+            txtTileSize.Text = arguments.TileSize.ToString();
+
+            nfloat newLeft = middlePoint.X - gestureRecognizer.Scale * middlePoint.X;
+            nfloat newTop = middlePoint.Y - gestureRecognizer.Scale * middlePoint.Y;
+            nfloat newWidth = extentWidth * gestureRecognizer.Scale;
+            nfloat newHeight = extentHeight * gestureRecognizer.Scale;
+            containerView.CurrentExtent = new CGRect(newLeft, newTop, newWidth, newHeight);
+            containerView.RefreshZoomTileView(arguments);
+
+            if (gestureRecognizer.State == UIGestureRecognizerState.Ended)
+            {
+                middlePoint = CGPoint.Empty;
+                zoomLevel = 0.0f;
+                tileSize = 0;
+                extentWidth = 0.0f;
+                extentHeight = 0.0f;
+            }
+
+            sw.Stop();
+            GestureTimeMonitorAction(sw.ElapsedMilliseconds);
         }
 
         private void InitializeComponents()
@@ -54,21 +112,21 @@ namespace DeepZoom
             lblTileSize.Text = "Tile Size:";
             UILabel lblZoomLevel = new UILabel(new CGRect(10, 80, 100, 50));
             lblZoomLevel.Text = "Zoom Level:";
-            lblResult = new UILabel(new CGRect(10, 130, 150, 50));
-            lblPanResult = new UILabel(new CGRect(10, 180, 150, 300));
-            lblPanResult.LineBreakMode = UILineBreakMode.WordWrap;
-            lblPanResult.Lines = 0;
+            lblRedrawResult = new UILabel(new CGRect(10, 130, 150, 50));
+            lblGestureResult = new UILabel(new CGRect(10, 180, 150, 300));
+            lblGestureResult.LineBreakMode = UILineBreakMode.WordWrap;
+            lblGestureResult.Lines = 0;
 
             View.AddSubview(btnApply);
             View.AddSubview(txtTileSize);
             View.AddSubview(txtZoomLevel);
             View.AddSubview(lblTileSize);
             View.AddSubview(lblZoomLevel);
-            View.AddSubview(lblResult);
-            View.AddSubview(lblPanResult);
+            View.AddSubview(lblRedrawResult);
+            View.AddSubview(lblGestureResult);
         }
 
-        private void GestureRecognizerHandler(UIPanGestureRecognizer gestureRecognizer)
+        private void PanGestureRecognizerHandler(UIPanGestureRecognizer gestureRecognizer)
         {
             Stopwatch sw = Stopwatch.StartNew();
             RefreshArguments arguments = CollectArguments(gestureRecognizer);
@@ -85,13 +143,13 @@ namespace DeepZoom
             }
 
             sw.Stop();
-            PanTimeMonitorAction(sw.ElapsedMilliseconds);
+            GestureTimeMonitorAction(sw.ElapsedMilliseconds);
         }
 
         private void btnApply_TouchUpInside(object sender, EventArgs e)
         {
             panActionTimeQueue.Clear();
-            lblPanResult.Text = string.Empty;
+            lblGestureResult.Text = string.Empty;
             RefreshTileView();
         }
 
@@ -116,10 +174,10 @@ namespace DeepZoom
             }
 
             sw.Stop();
-            lblResult.Text = string.Format("Redraw: {0} ms", sw.ElapsedMilliseconds / 10);
+            lblRedrawResult.Text = string.Format("Redraw: {0} ms", sw.ElapsedMilliseconds / 10);
         }
 
-        private void PanTimeMonitorAction(long time)
+        private void GestureTimeMonitorAction(long time)
         {
             panResult.Clear();
             if (panActionTimeQueue.Count > 6)
@@ -133,10 +191,10 @@ namespace DeepZoom
                 panResult.AppendLine(string.Format("Pan： {0}ms", item));
             }
 
-            lblPanResult.Text = panResult.ToString();
+            lblGestureResult.Text = panResult.ToString();
         }
 
-        private RefreshArguments CollectArguments(UIPanGestureRecognizer e)
+        private RefreshArguments CollectArguments(UIGestureRecognizer e)
         {
             RefreshArguments arguments = new RefreshArguments();
             arguments.ZoomLevel = double.Parse(txtZoomLevel.Text);
