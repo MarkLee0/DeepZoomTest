@@ -18,8 +18,6 @@ namespace DeepZoom
         private Queue panActionTimeQueue;
         private StringBuilder panResult;
         private CGPoint startPoint = CGPoint.Empty;
-        private CGPoint defaultPoint;
-        private CGPoint currentPoint;
 
         public RootViewController(IntPtr handle)
             : base(handle)
@@ -30,8 +28,7 @@ namespace DeepZoom
         {
             base.ViewDidLoad();
 
-            currentPoint = defaultPoint = new CGPoint(View.Frame.Width * .5f, View.Frame.Height * .5f);
-            panActionTimeQueue = new Queue(6);
+            panActionTimeQueue = new Queue();
             panResult = new StringBuilder();
             containerView = new ContainerView(View.Frame);
             containerView.CurrentExtent = new CGRect(0, 0, View.Frame.Width, View.Frame.Height);
@@ -57,8 +54,8 @@ namespace DeepZoom
             lblTileSize.Text = "Tile Size:";
             UILabel lblZoomLevel = new UILabel(new CGRect(10, 80, 100, 50));
             lblZoomLevel.Text = "Zoom Level:";
-            lblResult = new UILabel(new CGRect(10, 130, 120, 50));
-            lblPanResult = new UILabel(new CGRect(10, 180, 120, 300));
+            lblResult = new UILabel(new CGRect(10, 130, 150, 50));
+            lblPanResult = new UILabel(new CGRect(10, 180, 150, 300));
             lblPanResult.LineBreakMode = UILineBreakMode.WordWrap;
             lblPanResult.Lines = 0;
 
@@ -74,18 +71,14 @@ namespace DeepZoom
         private void GestureRecognizerHandler(UIPanGestureRecognizer gestureRecognizer)
         {
             Stopwatch sw = Stopwatch.StartNew();
-            RefreshArguments arguments = new RefreshArguments();
-            arguments.ZoomLevel = double.Parse(txtZoomLevel.Text);
-            arguments.TileSize = int.Parse(txtTileSize.Text);
-            arguments.TransformArguments = CollectTransformArguments(gestureRecognizer);
-            arguments.DefaultCenter = defaultPoint;
-            nfloat offsetX = arguments.TransformArguments.OffsetX;
-            nfloat offsetY = arguments.TransformArguments.OffsetY;
-            arguments.CurrentCenter = currentPoint = new CGPoint(currentPoint.X - offsetX, currentPoint.Y - offsetY);
-            arguments.Scale = 1.0;
-            containerView.CurrentExtent = new CGRect(new CGPoint(containerView.CurrentExtent.X + offsetX, containerView.CurrentExtent.Y + offsetY), containerView.CurrentExtent.Size);
+            RefreshArguments arguments = CollectArguments(gestureRecognizer);
+
+            nfloat x = containerView.CurrentExtent.X - arguments.OffsetX;
+            nfloat y = containerView.CurrentExtent.Y - arguments.OffsetY;
+            containerView.CurrentExtent = new CGRect(new CGPoint(x, y), containerView.CurrentExtent.Size);
 
             containerView.RefreshZoomTileView(arguments);
+
             if (gestureRecognizer.State == UIGestureRecognizerState.Ended)
             {
                 startPoint = CGPoint.Empty;
@@ -109,9 +102,6 @@ namespace DeepZoom
             RefreshArguments arguments = new RefreshArguments();
             arguments.ZoomLevel = double.Parse(txtZoomLevel.Text);
             arguments.TileSize = int.Parse(txtTileSize.Text);
-            arguments.DefaultCenter = defaultPoint;
-            arguments.CurrentCenter = defaultPoint;
-            arguments.Scale = 1.0;
             containerView.CurrentExtent = new CGRect(0, 0, View.Frame.Width, View.Frame.Height);
 
             foreach (var tileView in containerView.Subviews.OfType<DeepZoomTileView>())
@@ -146,23 +136,19 @@ namespace DeepZoom
             lblPanResult.Text = panResult.ToString();
         }
 
-        private TransformArguments CollectTransformArguments(UIGestureRecognizer e)
+        private RefreshArguments CollectArguments(UIPanGestureRecognizer e)
         {
-            TransformArguments arguments = new TransformArguments();
+            RefreshArguments arguments = new RefreshArguments();
+            arguments.ZoomLevel = double.Parse(txtZoomLevel.Text);
+            arguments.TileSize = int.Parse(txtTileSize.Text);
 
             CGPoint location = e.LocationInView(containerView);
             if (startPoint.Equals(CGPoint.Empty))
                 startPoint = location;
 
-            nfloat offsetX = startPoint.X - location.X;
-            nfloat offsetY = startPoint.Y - location.Y;
+            arguments.OffsetX = location.X - startPoint.X;
+            arguments.OffsetY = location.Y - startPoint.Y;
 
-            arguments.OffsetX = offsetX;
-            arguments.OffsetY = offsetY;
-            arguments.ScreenX = location.X;
-            arguments.ScreenY = location.Y;
-            arguments.ScreenWidth = View.Frame.Width;
-            arguments.ScreenHeight = View.Frame.Height;
             startPoint = location;
             return arguments;
         }

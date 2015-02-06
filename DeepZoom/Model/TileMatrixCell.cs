@@ -6,13 +6,13 @@ namespace DeepZoom
     {
         private int row;
         private int column;
-        private CGRect boundingBox;
+        private CGRect cellExtent;
 
-        public TileMatrixCell(int row, int column, CGRect boundingBox)
+        public TileMatrixCell(int row, int column, CGRect cellExtent)
         {
             this.row = row;
             this.column = column;
-            this.boundingBox = boundingBox;
+            this.cellExtent = cellExtent;
         }
 
         public int Row
@@ -27,10 +27,10 @@ namespace DeepZoom
             set { column = value; }
         }
 
-        public CGRect BoundingBox
+        public CGRect CellExtent
         {
-            get { return boundingBox; }
-            set { boundingBox = value; }
+            get { return cellExtent; }
+            set { cellExtent = value; }
         }
     }
 }

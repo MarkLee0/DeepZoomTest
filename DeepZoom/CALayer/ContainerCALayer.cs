@@ -27,7 +27,9 @@ namespace DeepZoom
 
         public void RefreshZoomTileView(RefreshArguments arguments)
         {
-            TileMatrix tileMatrix = new TileMatrix(arguments.TileSize, arguments.TileSize, arguments.CurrentCenter, arguments.ZoomLevel, arguments.Scale);
+            CGPoint defaultCenter = new CGPoint(Frame.Width * .5f, Frame.Height * .5f);
+
+            TileMatrix tileMatrix = new TileMatrix(arguments.TileSize, arguments.TileSize, defaultCenter, arguments.ZoomLevel);
             IEnumerable<TileMatrixCell> drawingTiles = tileMatrix.GetTileMatrixCells(currentExtent);
 
             Dictionary<string, DeepZoomTileCAlayer> drawnTiles = new Dictionary<string, DeepZoomTileCAlayer>();
@@ -46,11 +48,7 @@ namespace DeepZoom
                     currentTile.Dispose();
                 }
             }
-            if (arguments.TransformArguments != null)
-                foreach (var drawnTile in drawnTiles.Select(item => item.Value))
-                {
-                    TransformTile(drawnTile, arguments.TransformArguments);
-                }
+            TransformTile(arguments);
 
             foreach (var drawingTile in drawingTiles)
             {
@@ -63,15 +61,19 @@ namespace DeepZoom
                     tileView.ColumnIndex = drawingTile.Column;
                     tileView.ZoomLevel = arguments.ZoomLevel;
                     tileView.TileHeight = tileView.TileWidth = arguments.TileSize;
-                    tileView.Frame = drawingTile.BoundingBox;
+                    tileView.Frame = drawingTile.CellExtent;
                     AddSublayer(tileView);
                 }
             }
         }
 
-        public void TransformTile(DeepZoomTileCAlayer drawnTile, TransformArguments arguments)
+        public void TransformTile(RefreshArguments arguments)
         {
-            drawnTile.Position = new CGPoint(drawnTile.Position.X + arguments.OffsetX, drawnTile.Position.Y + arguments.OffsetY);
+            foreach (var drawnTile in Sublayers.OfType<DeepZoomTileCAlayer>())
+            {
+                drawnTile.Position = new CGPoint(drawnTile.Position.X + arguments.OffsetX,
+                    drawnTile.Position.Y + arguments.OffsetY);
+            }
         }
     }
 }

@@ -7,21 +7,18 @@ namespace DeepZoom
 {
     public class TileMatrix
     {
-        private nfloat tileWidth;
-        private nfloat tileHeight;
+        private int tileWidth;
+        private int tileHeight;
         private int rowCount;
         private int columnCount;
         private CGRect BoundingBox;
-        private double scale;
 
-        public TileMatrix(int tileWidth, int tileHeight, CGPoint center, double zoomLevel, double scale)
+        public TileMatrix(int tileWidth, int tileHeight, CGPoint center, double zoomLevel)
         {
             this.tileWidth = tileWidth;
             this.tileHeight = tileHeight;
-            this.scale = scale;
 
-            //rowCount = columnCount = (int)scale * (int)Math.Pow(2, zoomLevel);
-            rowCount = columnCount = (int)scale << (int)zoomLevel;
+            rowCount = columnCount = 1 << (int)zoomLevel;
             nfloat x = center.X - tileWidth * (columnCount >> 1);
             nfloat y = center.Y - tileHeight * (rowCount >> 1);
 
@@ -38,34 +35,28 @@ namespace DeepZoom
             int maxRowIndex = Convert.ToInt32(Math.Ceiling((currentExtent.Y + currentExtent.Height - BoundingBox.Y) / tileHeight));
 
             if (minColumnIndex < 0) minColumnIndex = 0;
-            if (maxColumnIndex >= columnCount) maxColumnIndex = columnCount;
+            if (maxColumnIndex >= columnCount) maxColumnIndex = columnCount - 1;
             if (minRowIndex < 0) minRowIndex = 0;
-            if (maxRowIndex >= rowCount) maxRowIndex = rowCount;
+            if (maxRowIndex >= rowCount) maxRowIndex = rowCount - 1;
 
-            nfloat tileScale = (nfloat)scale;
+            nfloat offsetX = 0;
+            nfloat offsetY = 0;
+            if (maxRowIndex == 0) offsetX = tileWidth >> 1;
+            if (maxColumnIndex == 0) offsetY = tileHeight >> 1;
 
-            if (maxRowIndex == 1 && maxColumnIndex == 1)
+            offsetX = BoundingBox.X - currentExtent.X - offsetX;
+            offsetY = BoundingBox.Y - currentExtent.Y - offsetY;
+
+            for (int rowIndex = minRowIndex; rowIndex <= maxRowIndex; rowIndex++)
             {
-                nfloat x = BoundingBox.X - tileWidth * .5f;
-                nfloat y = BoundingBox.Y - tileHeight * .5f;
-
-                CGRect cellExtent = new CGRect(x, y, tileWidth * tileScale, tileHeight * tileScale);
-                TileMatrixCell returnCell = new TileMatrixCell(0, 0, cellExtent);
-                drawingMatrixCells.Add(returnCell);
-            }
-            else
-            {
-                for (int row = minRowIndex; row < maxRowIndex; row++)
+                for (int columnIndex = minColumnIndex; columnIndex <= maxColumnIndex; columnIndex++)
                 {
-                    for (int column = minColumnIndex; column < maxColumnIndex; column++)
-                    {
-                        nfloat x = BoundingBox.X + tileWidth * tileScale * column;
-                        nfloat y = BoundingBox.Y + tileHeight * tileScale * row;
+                    nfloat x = offsetX + tileWidth * columnIndex;
+                    nfloat y = offsetY + tileHeight * rowIndex;
 
-                        CGRect cellExtent = new CGRect(x, y, tileWidth * tileScale, tileHeight * tileScale);
-                        TileMatrixCell returnCell = new TileMatrixCell(row, column, cellExtent);
-                        drawingMatrixCells.Add(returnCell);
-                    }
+                    CGRect cellExtent = new CGRect(x, y, tileWidth, tileHeight);
+                    TileMatrixCell returnCell = new TileMatrixCell(rowIndex, columnIndex, cellExtent);
+                    drawingMatrixCells.Add(returnCell);
                 }
             }
 

@@ -1,4 +1,3 @@
-using System;
 using CoreGraphics;
 using Foundation;
 using System.Collections.Generic;
@@ -12,6 +11,7 @@ namespace DeepZoom
     public class ContainerView : UIView
     {
         private CGRect currentExtent;
+        private Dictionary<string, DeepZoomTileView> tileViewCaches;
 
         public CGRect CurrentExtent
         {
@@ -22,35 +22,46 @@ namespace DeepZoom
         public ContainerView(CGRect bounds)
             : base(bounds)
         {
+            tileViewCaches = new Dictionary<string, DeepZoomTileView>();
         }
-
 
         public void RefreshZoomTileView(RefreshArguments arguments)
         {
-            TileMatrix tileMatrix = new TileMatrix(arguments.TileSize, arguments.TileSize, arguments.DefaultCenter, arguments.ZoomLevel, arguments.Scale);
+            CGPoint defaultCenter = new CGPoint(Frame.Width * .5f, Frame.Height * .5f);
+
+            TileMatrix tileMatrix = new TileMatrix(arguments.TileSize, arguments.TileSize, defaultCenter, arguments.ZoomLevel);
             IEnumerable<TileMatrixCell> drawingTiles = tileMatrix.GetTileMatrixCells(currentExtent);
 
             Dictionary<string, DeepZoomTileView> drawnTiles = new Dictionary<string, DeepZoomTileView>();
 
             foreach (var currentTile in Subviews.OfType<DeepZoomTileView>())
             {
+                string key = string.Format(CultureInfo.InvariantCulture, "{0},{1},{2}", currentTile.ZoomLevel, currentTile.ColumnIndex, currentTile.RowIndex);
                 if (currentTile.Frame.X > currentExtent.Width ||
                     currentTile.Frame.Y > currentExtent.Height ||
                     currentTile.Frame.X + currentTile.Frame.Width < 0 ||
                     currentTile.Frame.Y + currentTile.Frame.Height < 0)
                 {
-                    currentTile.RemoveFromSuperview();
-                    currentTile.Dispose();
+                    if (tileViewCaches.Count >= 100)
+                    {
+                        string lastKey = tileViewCaches.Last().Key;
+                        tileViewCaches[lastKey].RemoveFromSuperview();
+                        tileViewCaches[lastKey].Dispose();
+                        tileViewCaches.Remove(lastKey);
+                    }
+                    if (!tileViewCaches.ContainsKey(key))
+                    {
+                        currentTile.Hidden = true;
+                        tileViewCaches.Add(key, currentTile);
+                    }
                 }
                 else
                 {
-                    string key = string.Format(CultureInfo.InvariantCulture, "{0},{1},{2}", currentTile.ZoomLevel, currentTile.ColumnIndex, currentTile.RowIndex);
                     drawnTiles[key] = currentTile;
                 }
             }
 
-            if (arguments.TransformArguments != null)
-                TransformTile(arguments.TransformArguments);
+            TransformTile(arguments);
 
             foreach (var drawingTile in drawingTiles)
             {
@@ -58,26 +69,30 @@ namespace DeepZoom
 
                 if (!drawnTiles.ContainsKey(key))
                 {
-                    DeepZoomTileView tileView = new DeepZoomTileView();
-                    tileView.RowIndex = drawingTile.Row;
-                    tileView.ColumnIndex = drawingTile.Column;
-                    tileView.ZoomLevel = arguments.ZoomLevel;
-                    tileView.TileHeight = tileView.TileWidth = arguments.TileSize;
-                    tileView.Frame = drawingTile.BoundingBox;
-                    if (arguments.TransformArguments != null)
+                    if (tileViewCaches.ContainsKey(key))
                     {
-                        tileView.Center = new CGPoint(tileView.Center.X - arguments.TransformArguments.OffsetX, tileView.Center.Y - arguments.TransformArguments.OffsetY);
+                        tileViewCaches[key].Hidden = false;
+                        tileViewCaches.Remove(key);
                     }
-                    AddSubview(tileView);
+                    else
+                    {
+                        DeepZoomTileView tileView = new DeepZoomTileView();
+                        tileView.RowIndex = drawingTile.Row;
+                        tileView.ColumnIndex = drawingTile.Column;
+                        tileView.ZoomLevel = arguments.ZoomLevel;
+                        tileView.TileHeight = tileView.TileWidth = arguments.TileSize;
+                        tileView.Frame = drawingTile.CellExtent;
+                        AddSubview(tileView);
+                    }
                 }
             }
         }
 
-        private void TransformTile(TransformArguments arguments)
+        private void TransformTile(RefreshArguments arguments)
         {
             foreach (var drawnTile in Subviews.OfType<DeepZoomTileView>())
             {
-                drawnTile.Center = new CGPoint(drawnTile.Center.X - arguments.OffsetX, drawnTile.Center.Y - arguments.OffsetY);
+                drawnTile.Center = new CGPoint(drawnTile.Center.X + arguments.OffsetX, drawnTile.Center.Y + arguments.OffsetY);
             }
         }
     }
