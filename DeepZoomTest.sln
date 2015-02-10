@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeepZoom", "DeepZoom\DeepZoom.csproj", "{063D30CA-03D6-4FDB-96D2-9665F0D9866A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PanningTest", "PanningTest\PanningTest.csproj", "{2FCFEF27-DFA7-41D8-8EE5-3E30D3026867}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Ad-Hoc|Any CPU = Ad-Hoc|Any CPU
@@ -73,26 +75,53 @@ Global
 		{063D30CA-03D6-4FDB-96D2-9665F0D9866A}.Release|iPhoneSimulator.Build.0 = Release|iPhoneSimulator
 		{063D30CA-03D6-4FDB-96D2-9665F0D9866A}.Release|Mixed Platforms.ActiveCfg = Release|iPhone
 		{063D30CA-03D6-4FDB-96D2-9665F0D9866A}.Release|Mixed Platforms.Build.0 = Release|iPhone
+		{2FCFEF27-DFA7-41D8-8EE5-3E30D3026867}.Ad-Hoc|Any CPU.ActiveCfg = Ad-Hoc|iPhone
+		{2FCFEF27-DFA7-41D8-8EE5-3E30D3026867}.Ad-Hoc|iPhone.ActiveCfg = Ad-Hoc|iPhone
+		{2FCFEF27-DFA7-41D8-8EE5-3E30D3026867}.Ad-Hoc|iPhone.Build.0 = Ad-Hoc|iPhone
+		{2FCFEF27-DFA7-41D8-8EE5-3E30D3026867}.Ad-Hoc|iPhoneSimulator.ActiveCfg = Ad-Hoc|iPhoneSimulator
+		{2FCFEF27-DFA7-41D8-8EE5-3E30D3026867}.Ad-Hoc|iPhoneSimulator.Build.0 = Ad-Hoc|iPhoneSimulator
+		{2FCFEF27-DFA7-41D8-8EE5-3E30D3026867}.Ad-Hoc|Mixed Platforms.ActiveCfg = Ad-Hoc|iPhone
+		{2FCFEF27-DFA7-41D8-8EE5-3E30D3026867}.Ad-Hoc|Mixed Platforms.Build.0 = Ad-Hoc|iPhone
+		{2FCFEF27-DFA7-41D8-8EE5-3E30D3026867}.AppStore|Any CPU.ActiveCfg = AppStore|iPhone
+		{2FCFEF27-DFA7-41D8-8EE5-3E30D3026867}.AppStore|iPhone.ActiveCfg = AppStore|iPhone
+		{2FCFEF27-DFA7-41D8-8EE5-3E30D3026867}.AppStore|iPhone.Build.0 = AppStore|iPhone
+		{2FCFEF27-DFA7-41D8-8EE5-3E30D3026867}.AppStore|iPhoneSimulator.ActiveCfg = AppStore|iPhoneSimulator
+		{2FCFEF27-DFA7-41D8-8EE5-3E30D3026867}.AppStore|iPhoneSimulator.Build.0 = AppStore|iPhoneSimulator
+		{2FCFEF27-DFA7-41D8-8EE5-3E30D3026867}.AppStore|Mixed Platforms.ActiveCfg = AppStore|iPhone
+		{2FCFEF27-DFA7-41D8-8EE5-3E30D3026867}.AppStore|Mixed Platforms.Build.0 = AppStore|iPhone
+		{2FCFEF27-DFA7-41D8-8EE5-3E30D3026867}.Debug|Any CPU.ActiveCfg = Debug|iPhone
+		{2FCFEF27-DFA7-41D8-8EE5-3E30D3026867}.Debug|iPhone.ActiveCfg = Debug|iPhone
+		{2FCFEF27-DFA7-41D8-8EE5-3E30D3026867}.Debug|iPhone.Build.0 = Debug|iPhone
+		{2FCFEF27-DFA7-41D8-8EE5-3E30D3026867}.Debug|iPhoneSimulator.ActiveCfg = Debug|iPhoneSimulator
+		{2FCFEF27-DFA7-41D8-8EE5-3E30D3026867}.Debug|iPhoneSimulator.Build.0 = Debug|iPhoneSimulator
+		{2FCFEF27-DFA7-41D8-8EE5-3E30D3026867}.Debug|Mixed Platforms.ActiveCfg = Debug|iPhone
+		{2FCFEF27-DFA7-41D8-8EE5-3E30D3026867}.Debug|Mixed Platforms.Build.0 = Debug|iPhone
+		{2FCFEF27-DFA7-41D8-8EE5-3E30D3026867}.Evaluation|Any CPU.ActiveCfg = AppStore|iPhone
+		{2FCFEF27-DFA7-41D8-8EE5-3E30D3026867}.Evaluation|iPhone.ActiveCfg = AppStore|iPhone
+		{2FCFEF27-DFA7-41D8-8EE5-3E30D3026867}.Evaluation|iPhone.Build.0 = AppStore|iPhone
+		{2FCFEF27-DFA7-41D8-8EE5-3E30D3026867}.Evaluation|iPhoneSimulator.ActiveCfg = AppStore|iPhoneSimulator
+		{2FCFEF27-DFA7-41D8-8EE5-3E30D3026867}.Evaluation|iPhoneSimulator.Build.0 = AppStore|iPhoneSimulator
+		{2FCFEF27-DFA7-41D8-8EE5-3E30D3026867}.Evaluation|Mixed Platforms.ActiveCfg = AppStore|iPhone
+		{2FCFEF27-DFA7-41D8-8EE5-3E30D3026867}.Evaluation|Mixed Platforms.Build.0 = AppStore|iPhone
+		{2FCFEF27-DFA7-41D8-8EE5-3E30D3026867}.Full|Any CPU.ActiveCfg = AppStore|iPhone
+		{2FCFEF27-DFA7-41D8-8EE5-3E30D3026867}.Full|iPhone.ActiveCfg = AppStore|iPhone
+		{2FCFEF27-DFA7-41D8-8EE5-3E30D3026867}.Full|iPhone.Build.0 = AppStore|iPhone
+		{2FCFEF27-DFA7-41D8-8EE5-3E30D3026867}.Full|iPhoneSimulator.ActiveCfg = AppStore|iPhoneSimulator
+		{2FCFEF27-DFA7-41D8-8EE5-3E30D3026867}.Full|iPhoneSimulator.Build.0 = AppStore|iPhoneSimulator
+		{2FCFEF27-DFA7-41D8-8EE5-3E30D3026867}.Full|Mixed Platforms.ActiveCfg = AppStore|iPhone
+		{2FCFEF27-DFA7-41D8-8EE5-3E30D3026867}.Full|Mixed Platforms.Build.0 = AppStore|iPhone
+		{2FCFEF27-DFA7-41D8-8EE5-3E30D3026867}.Release|Any CPU.ActiveCfg = Release|iPhone
+		{2FCFEF27-DFA7-41D8-8EE5-3E30D3026867}.Release|iPhone.ActiveCfg = Release|iPhone
+		{2FCFEF27-DFA7-41D8-8EE5-3E30D3026867}.Release|iPhone.Build.0 = Release|iPhone
+		{2FCFEF27-DFA7-41D8-8EE5-3E30D3026867}.Release|iPhoneSimulator.ActiveCfg = Release|iPhoneSimulator
+		{2FCFEF27-DFA7-41D8-8EE5-3E30D3026867}.Release|iPhoneSimulator.Build.0 = Release|iPhoneSimulator
+		{2FCFEF27-DFA7-41D8-8EE5-3E30D3026867}.Release|Mixed Platforms.ActiveCfg = Release|iPhone
+		{2FCFEF27-DFA7-41D8-8EE5-3E30D3026867}.Release|Mixed Platforms.Build.0 = Release|iPhone
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = ListCheckbox\ListCheckbox.csproj
-	EndGlobalSection
-	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 5
-		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = http://ap.thinkgeo.com:8081/defaultcollection
-		SccLocalPath0 = .
-		SccProjectUniqueName1 = FileSystem\\FileSystem.csproj
-		SccProjectName1 = FileSystem
-		SccLocalPath1 = FileSystem
-		SccProjectUniqueName2 = DrawGraphics\\DrawGraphics.csproj
-		SccProjectName2 = DrawGraphics
-		SccLocalPath2 = DrawGraphics
-		SccProjectUniqueName3 = Base64Sample\\Base64Sample.csproj
-		SccProjectName3 = Base64Sample
-		SccLocalPath3 = Base64Sample
 	EndGlobalSection
 EndGlobal
