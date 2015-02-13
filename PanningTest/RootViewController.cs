@@ -1,4 +1,5 @@
-﻿using CoreGraphics;
+﻿using System.Diagnostics;
+using CoreGraphics;
 using System;
 using UIKit;
 
@@ -50,6 +51,7 @@ namespace PanningTest
 
         private void PanHandler(UIPanGestureRecognizer gesture)
         {
+
             CGPoint translation = gesture.TranslationInView(rotationView);
             if (gesture.State == UIGestureRecognizerState.Began)
             {
@@ -58,6 +60,8 @@ namespace PanningTest
             }
             else if (gesture.State == UIGestureRecognizerState.Changed)
             {
+                Stopwatch sw = Stopwatch.StartNew();
+
                 var offsetX = translation.X;
                 var offsetY = translation.Y;
 
@@ -66,43 +70,69 @@ namespace PanningTest
 
                 tile.Frame = new CGRect(newLeft, newTop, tile.Frame.Width, tile.Frame.Height);
                 gesture.SetTranslation(new CGPoint(0, 0), View);
+                sw.Stop();
+                Console.WriteLine("Panning: " + sw.ElapsedMilliseconds);
             }
             else if (gesture.State == UIGestureRecognizerState.Ended)
             {
+                Stopwatch sw = Stopwatch.StartNew();
+
                 var inertia = gesture.VelocityInView(rotationView);
                 var offsetX = inertia.X * animationOffsetRatio;
-                var offsetY = inertia.X * animationOffsetRatio;
-                var newLeft = tile.Frame.GetMinX() + offsetX;
-                var newTop = tile.Frame.GetMinY() + offsetY;
+                var offsetY = inertia.Y * animationOffsetRatio;
+                var newLeft = tile.Frame.X + offsetX;
+                var newTop = tile.Frame.Y + offsetY;
 
                 UIView.Animate(animationDuration, 0, UIViewAnimationOptions.CurveEaseOut | UIViewAnimationOptions.AllowUserInteraction,
-                        () => { tile.Frame = new CGRect(newLeft, newTop, tile.Frame.Width, tile.Frame.Height); }, null);
+                        () => { tile.Frame = new CGRect(newLeft, newTop, tile.Frame.Width, tile.Frame.Height); },
+                        () =>
+                        {
+                            sw.Stop();
+                            Console.WriteLine("Paned: " + sw.ElapsedMilliseconds);
+                        });
             }
         }
 
         private void PinchHandler(UIPinchGestureRecognizer gesture)
         {
+
             if (gesture.State == UIGestureRecognizerState.Changed)
             {
+                Stopwatch sw = Stopwatch.StartNew();
+
                 CGPoint touchAnchor = gesture.AnchorInView(eventView);
                 ScaleView(tile, gesture.Scale, touchAnchor);
                 gesture.Scale = 1;
+                sw.Stop();
+                Console.WriteLine("Pinching: " + sw.ElapsedMilliseconds);
             }
             else if (gesture.State == UIGestureRecognizerState.Ended)
             {
+                Stopwatch sw = Stopwatch.StartNew();
+
                 CGPoint touchAnchor = gesture.AnchorInView(eventView);
                 UIView.Animate(animationDuration, 0,
                     UIViewAnimationOptions.CurveEaseOut | UIViewAnimationOptions.AllowUserInteraction,
-                    () => ScaleView(tile, 1 + gesture.Velocity * animationOffsetRatio, touchAnchor), null);
+                    () => ScaleView(tile, 1 + gesture.Velocity * animationOffsetRatio, touchAnchor),
+                    () =>
+                    {
+                        sw.Stop();
+                        Console.WriteLine("Pinched: " + sw.ElapsedMilliseconds);
+                    });
             }
         }
 
         private void RotationHandler(UIRotationGestureRecognizer gesture)
         {
+
             if (gesture.State == UIGestureRecognizerState.Changed)
             {
+                Stopwatch sw = Stopwatch.StartNew();
+
                 rotationView.Transform = CGAffineTransform.Rotate(rotationView.Transform, gesture.Rotation);
                 gesture.Rotation = 0;
+                sw.Stop();
+                Console.WriteLine("Rotating: " + sw.ElapsedMilliseconds);
             }
         }
 
